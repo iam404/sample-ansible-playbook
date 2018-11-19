@@ -1,0 +1,5 @@
+# Make sure SELinux is not enforcing in nginx nodes.
+---
+- name: Set SELinux in permissive or disable mode
+  command: setenforce Permissive
+  become: yes

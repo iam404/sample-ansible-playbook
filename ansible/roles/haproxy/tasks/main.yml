@@ -1,0 +1,22 @@
+---
+- name: Ensuring libselinux libraries are present.
+  package: name=libselinux-python state=present
+  become: yes
+
+- name: Ensuring HAProxy is present.
+  package: name=haproxy state=present
+  become: yes
+
+- name: Copy HAProxy configuration in place.
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 0644
+    validate: haproxy -f %s -c -q
+  notify: restart haproxy
+  become: yes
+
+- name: Ensuring HAProxy is started.
+  service: name=haproxy state=started enabled=yes
+  become: yes
+  become_user: root

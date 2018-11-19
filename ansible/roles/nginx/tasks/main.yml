@@ -1,0 +1,32 @@
+---
+- include: roles/utils/tasks/selinux.yml
+
+- name: Ensuring nginx are present.
+  package: name=nginx state=present
+  become: yes
+  become_user: root
+
+- name: Get system CPU CORE count for Nginx configuration.
+  command: nproc
+  register: cpu_count
+
+
+- name: Get system MAX ULIMIT count for Nginx configuration.
+  command: python -c "import resource; ret=resource.getrlimit(resource.RLIMIT_NOFILE);print ret[1];"
+  register: ulimit_max_count
+
+
+- name: Setup NGINX Site Configuration, Hold on...
+  template: src=nginx-conf.cfg.j2 dest=/etc/nginx/nginx.conf
+  notify: service nginx restart
+  become: yes
+
+- name: Setup NGINX Site Configuration, Hold on...
+  template: src=site.cfg.j2 dest=/etc/nginx/conf.d/site.conf
+  notify: service nginx restart
+  become: yes
+
+
+- name: Ensuring Nginx is started.
+  service: name=nginx state=started enabled=yes
+  become: yes

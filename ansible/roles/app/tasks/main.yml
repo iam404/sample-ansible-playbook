@@ -1,0 +1,19 @@
+---
+- name: Geting Hostname of the system
+  command: hostname
+  register: hostname
+
+- name: Make sure destination dir exists
+  become: yes
+  file:
+    path: "/var/www"
+    state: directory
+    recurse: yes
+
+- name: Deploying local.html, Hold on...
+  template: src=local-html.cfg.j2 dest=/var/www/local.html
+  become: yes
+
+- name: Deploying local.html, Hold on...
+  template: src=avaibility-html.cfg.j2 dest=/var/www/on-call.html
+  become: yes

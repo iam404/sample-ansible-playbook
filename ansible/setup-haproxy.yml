@@ -1,0 +1,15 @@
+---
+- name: Setup Loadbalancer Node with HAproxy
+  hosts: loadbalancer
+  gather_facts: no
+  tags:
+      - loadbalancer
+  pre_tasks:
+      - name: Ensuring libselinux libraries are present. Hold on...
+        package: name=libselinux-python state=present
+        become: yes
+        become_user: root
+
+  roles:
+    - haproxy
+

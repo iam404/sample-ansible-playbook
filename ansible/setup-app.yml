@@ -1,0 +1,19 @@
+---
+- name: Setup Loadbalancer Node with HAproxy
+  hosts: app
+  gather_facts: no
+  tags:
+      - app
+  pre_tasks:
+      - name: Ensuring libselinux libraries are present. Hold on...
+        package: name=libselinux-python state=present
+        become: yes
+        become_user: root
+
+      - name: Ensuring epel-release libraries are present. Hold on...
+        package: name=epel-release state=present
+        become: yes
+        become_user: root
+  roles:
+    - nginx
+    - app
